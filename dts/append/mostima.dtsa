@@ -1,0 +1,15 @@
+panel {
+		compatible = "test", "test";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0x0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			endpoint@0 {
+				reg = <0x0>;
+				remote-endpoint = <30>;
+				phandle = <13>;
+			};
+		};
+	};
