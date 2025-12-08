@@ -61,8 +61,10 @@ def main():
         print(last_config["interact"].summary)
         print("----------------------------------------")
         input("准备好后按下回车键继续，关闭程序退出: ")
+        download_with_preset_file(last_config)
+        input("烧录完成,断开该设备并插入下一个已进入FEL的设备，准备好后按下回车键继续，关闭程序退出: ")
         while True:
-            download_with_preset_file(last_config)
+            last_config["flasher"].download_firmware()
             input("烧录完成,断开该设备并插入下一个已进入FEL的设备，准备好后按下回车键继续，关闭程序退出: ")
 
     check_exist_dtb()
