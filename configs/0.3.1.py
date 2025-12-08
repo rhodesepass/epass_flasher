@@ -20,18 +20,18 @@ xfel_config = {
     "erase_nand": True,
     "erase_size": int(0x8000000),
     "splwrite": [
-        [1024, 0, "u-boot-sunxi-with-spl.bin"]
+        [1024, 0, "firmware/u-boot-sunxi-with-spl.bin"]
     ],
     "write": [
-        [0x20000, "u-boot.img"],
-        [0x100000, "devicetree.dtb"],
-        [0x120000, "zImage-0.3"],
-        [0x680000, "ubi.img"]
+        [0x20000, "firmware/u-boot.img"],
+        [0x100000, "devicetree.dtb"], # generate at runtime
+        [0x120000, "firmware/zImage"],
+        [0x680000, "firmware/ubi.img"]
     ]
 }
 
 # put devicetree path here
-dt_file = "dts/devicetree_0.3.dts"
+dt_file = "firmware/devicetree-0.3.dts"
 
 # delete_node path nodename
 # insert_node path node_path
@@ -112,8 +112,8 @@ def patch():
     output = result.stdout or ""
     m = re.search(r"Found spi nand flash '.*' with (\d+) bytes", output)
     if m == None:
-        print("错误:获取不到闪存大小,请检查设备是否已连接,是否处于FEL模式!!!")
-        sys.exit(1)
+        print("获取输出为:",output)
+        raise Exception("错误:获取不到闪存大小,请检查设备是否已连接,是否处于FEL模式!!!")
     flash_size = int(m.group(1))
     xfel_config["erase_size"] = flash_size
     if flash_size is not None:

@@ -1,8 +1,12 @@
 import sys,os
 
+BIN_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "bin"))
+os.environ["PATH"] += os.pathsep + BIN_PATH
+
 from dt_patcher import Patcher
 from interact import Interact
 from flasher import Flasher
+import traceback
 
 header = """
 电子通行证烧录程序。
@@ -42,6 +46,11 @@ if __name__ == "__main__":
     try:
         print(header)
         main()
-    except KeyboardInterrupt:
-        print("\n\n正在退出程序。")
-        sys.exit(0)
+    except Exception as e:
+        print("出现错误",e)
+        traceback.print_exc()
+
+        pass
+    
+    print("请按回车键继续.....")
+    input()
