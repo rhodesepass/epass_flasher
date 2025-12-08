@@ -66,6 +66,8 @@ Required packages:
 
 ### Running the Flasher
 
+#### Mode 1: Interactive Mode (Standard)
+
 1. **Place firmware files** in the same directory as the flasher:
    - `u-boot-sunxi-with-spl.bin` - Bootloader with SPL
    - `u-boot.img` - U-Boot image
@@ -89,8 +91,65 @@ Required packages:
      - Compile the device tree blob (DTB)
      - Erase the flash memory
      - Write bootloader, kernel, and filesystem
+     - Save configuration to `last_config_path` file for future use
    
-5. **Manually reboot** your device after the process completes
+5. **Disconnect USB and turn off power** of your device, then turn on power to boot
+
+#### Mode 2: Quick Reflash Mode (Reuse Last Configuration)
+
+If you've already flashed a device and need to flash another device with the **same configuration**:
+
+1. **Run the flasher**:
+   ```bash
+   python main.py
+   ```
+
+2. **The tool will detect saved configuration**:
+   - If a `last_config_path` file exists, you'll see:
+     ```
+     检测到上次生成的设备树和使用的烧录配置，是否直接使用？
+     上次保存的配置:
+     ----------------------------------------
+     [Configuration details]
+     ----------------------------------------
+     输入Y使用已有文件，输入其他任意键重新生成:
+     ```
+
+3. **Choose an option**:
+   - Type `Y` or `y` to use the saved configuration (skips device tree patching)
+   - Type any other key to regenerate configuration from scratch
+
+4. **Wait for flashing to complete** and disconnect/reconnect the device
+
+**Benefits**: Faster flashing by reusing the already-compiled device tree and configuration.
+
+#### Mode 3: Production/Batch Mode (Multiple Devices)
+
+For flashing **multiple devices** sequentially with the same configuration:
+
+1. **First, create a saved configuration** by running the flasher once in Interactive Mode
+
+2. **Start batch mode** with the saved configuration file:
+   ```bash
+   python main.py --config_path last_config_path
+   ```
+
+3. **Prepare your first device** in FEL mode and press Enter
+
+4. **The tool will flash the device** and then prompt:
+   ```
+   烧录完成,断开该设备并插入下一个已进入FEL的设备，准备好后按下回车键继续，关闭程序退出:
+   ```
+
+5. **Repeat for each device**:
+   - Disconnect the flashed device
+   - Connect the next device in FEL mode
+   - Press Enter to flash
+   - Continue until all devices are flashed
+
+6. **Close the program** when finished (Ctrl+C or close window)
+
+**Benefits**: Ideal for production environments where you need to flash many devices with identical firmware and configuration.
 
 ## Project Structure
 

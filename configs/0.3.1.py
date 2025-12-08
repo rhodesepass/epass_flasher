@@ -84,7 +84,8 @@ def patch():
     # simply append to patchlist based on selection
     print("您已选择0.3版本设备")
     print("准备修补设备树...")
-    print("获取闪存大小...")
+
+
     print("请选择屏幕型号:")
     cnt = 0
     for i in screen_models:
@@ -97,6 +98,9 @@ def patch():
             break
         except IndexError:
             print("无效输入，请重新输入。")
+
+
+    print("获取闪存大小...")
     # 执行命令并捕获输出
     try:
         if os.name == "nt":
