@@ -71,8 +71,8 @@ class Flasher:
         d = self.config
         try:
             if d["erase_nand"]:
-                self.exec_cmd(f"spinand erase 0 {str(d["erase_size"])}")
                 print("擦除闪存...")
+                self.exec_cmd(f"spinand erase 0 {str(d["erase_size"])}")
             if d["splwrite"] != []:
                 print("写入spl引导...")
                 for w in d["splwrite"]:
