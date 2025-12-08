@@ -48,8 +48,7 @@ def check_exist_dtb():
             print("烧录完成！请断开设备电源，拔掉数据线，然后重新上电启动设备。")
             sys.exit(0)
 
-
-def main():
+def handle_batch_mode():
     parser = argparse.ArgumentParser(description='Epass flasher')
     parser.add_argument('--config_path', help='Path to input config file',default=None)
     args = parser.parse_args()
@@ -67,6 +66,9 @@ def main():
             last_config["flasher"].download_firmware()
             input("烧录完成,断开该设备并插入下一个已进入FEL的设备，准备好后按下回车键继续，关闭程序退出: ")
 
+
+def main():
+    handle_batch_mode()
     check_exist_dtb()
 
     interact = Interact()
@@ -100,6 +102,9 @@ if __name__ == "__main__":
     try:
         print(header)
         main()
+    except KeyboardInterrupt:
+        print("\n退出烧录程序..")
+        sys.exit(0)
     except Exception as e:
         print("出现错误",e)
         traceback.print_exc()
