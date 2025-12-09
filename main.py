@@ -31,8 +31,8 @@ def download_with_preset_file(config):
 
 def check_exist_dtb():
     last_config_path_file = Path("last_config_path")
-    last_config = pickle.load(open("last_config_path", "rb"))
     if last_config_path_file.exists():
+        last_config = pickle.load(open("last_config_path", "rb"))
         print("检测到上次生成的设备树和使用的烧录配置，是否直接使用？")
         print("上次保存的配置:")
         print("----------------------------------------")
