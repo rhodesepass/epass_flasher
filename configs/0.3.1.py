@@ -66,6 +66,7 @@ def laowang_patch() -> None:
 def hannstar_patch() -> None:
 
     patchlist_hannstar = [
+    ["delete_node","/st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
     ]
 
@@ -79,6 +80,7 @@ def hannstar_patch() -> None:
 def boe_patch() -> None:
 
     patchlist_boe = [
+    ["delete_node","/st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_BOE.dtsa"],
     ]
 
