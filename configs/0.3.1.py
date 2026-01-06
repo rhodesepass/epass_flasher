@@ -76,7 +76,7 @@ def hannstar_patch() -> None:
     for item in patchlist_hannstar:
         patchlist.append(item)
 
-#京东方(WIP)
+#京东方
 def boe_patch() -> None:
 
     patchlist_boe = [
@@ -95,13 +95,13 @@ def boe_patch() -> None:
 screen_models = [
     "老王",
     "翰彩",
-    #"京东方",
+    "京东方",
 ]
 
 screen_models_cb = [
     laowang_patch,
     hannstar_patch,
-    #boe_patch,
+    boe_patch,
 ]
 
 # will be called devicetree patcher
