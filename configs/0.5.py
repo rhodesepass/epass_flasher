@@ -31,7 +31,7 @@ xfel_config = {
 }
 
 # put devicetree path here
-dt_file = "firmware/devicetree-0.5.dts"
+dt_file = "firmware/devicetree-0.3.dts"
 
 # delete_node path nodename
 # insert_node path node_path
@@ -67,8 +67,11 @@ def laowang_patch() -> None:
 def hannstar_patch() -> None:
 
     patchlist_hannstar = [
-    ["delete_node","/st7701initseq"],
+    ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
+    #V0.5 workaround
+    ["delete_prop","/st7701initseq","cs-gpios"],
+    ["insert_prop","/st7701initseq","cs-gpios",CellArray([LabelReference("pio"),4,11,0])],
     ]
 
     global patchlist,summary
@@ -81,8 +84,11 @@ def hannstar_patch() -> None:
 def boe_patch() -> None:
 
     patchlist_boe = [
-    ["delete_node","/st7701initseq"],
+    ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_BOE.dtsa"],
+    #V0.5 workaround
+    ["delete_prop","/st7701initseq","cs-gpios"],
+    ["insert_prop","/st7701initseq","cs-gpios",CellArray([LabelReference("pio"),4,11,0])],
     ]
 
     global patchlist,summary

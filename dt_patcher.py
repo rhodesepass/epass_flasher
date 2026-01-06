@@ -69,7 +69,10 @@ class Patcher:
             return
         with open(node_path, 'r', encoding='utf-8') as f:
             node_dts = f.read()
-        parent.add_child(Devicetree.from_dts(node_dts))
+        if node_dts == "":
+            return
+        for child in Devicetree.from_dts(node_dts).children:
+            parent.add_child(child)
         return
 
     def delete_prop(self, path: str, propname :str) -> None:
