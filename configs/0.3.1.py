@@ -49,31 +49,59 @@ dt_file = "firmware/devicetree-0.3.dts"
 patchlist = [
 ]
 
-patchlist_laowang = [
-    ["insert_prop","/soc/lcd-controller@1c0c000","srgn,swap-b-r",None],
-]
-
+#老王
 def laowang_patch() -> None:
-        global patchlist,summary
-        print("您已选择老王屏幕")
-        summary = "屏幕型号: " + "老王" + "\n"
-        for item in patchlist_laowang:
-            patchlist.append(item)
+    
+    patchlist_laowang = [
+    ["insert_prop","/soc/lcd-controller@1c0c000","srgn,swap-b-r",None],
+    ]
 
-def non_laowang_patch() -> None:
-        global patchlist,summary
-        print("您已选择非老王屏幕")
-        summary = "屏幕型号: " + "非老王" + "\n"
-        # no extra patch for non-laowang screen
+    global patchlist,summary
+    print("您已选择老王屏幕")
+    summary = "屏幕型号: " + "老王" + "\n"
+    for item in patchlist_laowang:
+        patchlist.append(item)
+
+#翰彩
+def hannstar_patch() -> None:
+
+    patchlist_hannstar = [
+    ["delete_node","/st7701initseq"],
+    ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
+    ]
+
+    global patchlist,summary
+    print("您已选择翰彩屏幕")
+    summary = "屏幕型号: " + "翰彩" + "\n"
+    for item in patchlist_hannstar:
+        patchlist.append(item)
+
+#京东方
+def boe_patch() -> None:
+
+    patchlist_boe = [
+    ["delete_node","/st7701initseq"],
+    ["insert_node","/","dts/st7701_initseq/st7701_BOE.dtsa"],
+    ]
+
+    global patchlist,summary
+    print("您已选择京东方屏幕")
+    summary = "屏幕型号: " + "京东方" + "\n"
+    for item in patchlist_boe:
+        patchlist.append(item)
+
+
 
 screen_models = [
     "老王",
-    "非老王",
+    "翰彩",
+    "京东方",
 ]
 
 screen_models_cb = [
     laowang_patch,
-    non_laowang_patch,
+    hannstar_patch,
+    boe_patch,
 ]
 
 # will be called devicetree patcher
