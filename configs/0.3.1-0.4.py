@@ -66,7 +66,7 @@ def laowang_patch() -> None:
 def hannstar_patch() -> None:
 
     patchlist_hannstar = [
-    ["delete_node","/st7701initseq"],
+    ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
     ]
 
@@ -80,7 +80,7 @@ def hannstar_patch() -> None:
 def boe_patch() -> None:
 
     patchlist_boe = [
-    ["delete_node","/st7701initseq"],
+    ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_BOE.dtsa"],
     ]
 
@@ -158,6 +158,15 @@ def patch():
                           "/soc/spi@1c05000/spi-nand@0/partitions/partition@3",
                           "reg",
                            CellArray([int(0x620000), rootfs_size])])
+        
+
+    input_usb = input("是否启用USB高速模式？(输入y启用 回车关闭): ").strip().lower()
+    if input_usb == 'y':
+        patchlist.append(["insert_prop","/soc/usb@1c13000","srgn,usb-hs-enabled",None])
+        summary += "USB高速模式: 启用\n"
+    else:
+        summary += "USB高速模式: 关闭\n"
+
 
     return patchlist,dt_file,summary
     

@@ -3,7 +3,9 @@ from pydevicetree.ast import *
 import os,sys,subprocess
 import re
 
-# Configuration for 0.2 version device
+summary = ""
+
+# Configuration for 0.5 version device
 
 # xfel configurations
 
@@ -22,14 +24,14 @@ xfel_config = {
     ],
     "write": [
         [0x20000, "firmware/u-boot.img"],
-        [0x100000, "devicetree.dtb"],
+        [0x100000, "devicetree.dtb"], # generate at runtime
         [0x120000, "firmware/zImage"],
         [0x680000, "firmware/ubi.img"]
     ]
 }
 
 # put devicetree path here
-dt_file = "firmware/devicetree-0.2.dts"
+dt_file = "firmware/devicetree-0.5.dts"
 
 # delete_node path nodename
 # insert_node path node_path
@@ -44,19 +46,90 @@ dt_file = "firmware/devicetree-0.2.dts"
 # ["delete_prop", "/soc/spi@1c05000", "status"]
 # ["insert_prop", "/soc/spi@1c05000", "status", StringList(["okay"])] like this
 
+
 patchlist = [
+]
+
+#老王
+def laowang_patch() -> None:
+    
+    patchlist_laowang = [
     ["insert_prop","/soc/lcd-controller@1c0c000","srgn,swap-b-r",None],
+    ]
+
+    global patchlist,summary
+    print("您已选择老王屏幕")
+    summary = "屏幕型号: " + "老王" + "\n"
+    for item in patchlist_laowang:
+        patchlist.append(item)
+
+#翰彩
+def hannstar_patch() -> None:
+
+    patchlist_hannstar = [
+    ["delete_node","/st7701initseq"],
+    ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
+    ]
+
+    global patchlist,summary
+    print("您已选择翰彩屏幕")
+    summary = "屏幕型号: " + "翰彩" + "\n"
+    for item in patchlist_hannstar:
+        patchlist.append(item)
+
+#京东方
+def boe_patch() -> None:
+
+    patchlist_boe = [
+    ["delete_node","/st7701initseq"],
+    ["insert_node","/","dts/st7701_initseq/st7701_BOE.dtsa"],
+    ]
+
+    global patchlist,summary
+    print("您已选择京东方屏幕")
+    summary = "屏幕型号: " + "京东方" + "\n"
+    for item in patchlist_boe:
+        patchlist.append(item)
+
+
+
+screen_models = [
+    "老王",
+    "翰彩",
+    "京东方",
+]
+
+screen_models_cb = [
+    laowang_patch,
+    hannstar_patch,
+    boe_patch,
 ]
 
 # will be called devicetree patcher
 # will be called first
 def patch():
+    global patchlist,summary
     # put screen selection logic here
     # simply append to patchlist based on selection
-    print("您已选择0.2版本设备")
+    print("您已选择0.3版本设备")
     print("准备修补设备树...")
+
+
+    print("请选择屏幕型号:")
+    cnt = 0
+    for i in screen_models:
+        cnt += 1
+        print(f"{cnt}: {i}")
+    while True:
+        selection = int(input("输入需要的屏幕型号前的序号: "))
+        try:
+            screen_models_cb[selection-1]()
+            break
+        except IndexError:
+            print("无效输入，请重新输入。")
+
+
     print("获取闪存大小...")
-    config = "屏幕型号: " + "老王3元" + "\n"
     # 执行命令并捕获输出
     try:
         if os.name == "nt":
@@ -66,8 +139,8 @@ def patch():
         # jpython shall not get here.
     except Exception as e:
         print("获取失败,使用默认参数 ", e)
-        config += "闪存大小: 默认\n"
-        return patchlist,dt_file,config
+        summary += "闪存大小: 默认\n"
+        return patchlist,dt_file,summary
     # 获取标准输出并提取闪存大小（例如: "Found spi nand flash 'W25N01GV' with 134217728 bytes"）
     output = result.stdout or ""
     m = re.search(r"Found spi nand flash '.*' with (\d+) bytes", output)
@@ -77,7 +150,7 @@ def patch():
     flash_size = int(m.group(1))
     xfel_config["erase_size"] = flash_size
     if flash_size is not None:
-        config += f"闪存大小: {str(flash_size//1048576)} MB\n"
+        summary += f"闪存大小: {str(flash_size//1048576)} MB\n"
         rootfs_size = flash_size - int(0x620000)
         patchlist.append(["delete_prop",
                           "/soc/spi@1c05000/spi-nand@0/partitions/partition@3",
@@ -87,7 +160,6 @@ def patch():
                           "reg",
                            CellArray([int(0x620000), rootfs_size])])
         
-
     input_usb = input("是否启用USB高速模式？(输入y启用 回车关闭): ").strip().lower()
     if input_usb == 'y':
         patchlist.append(["insert_prop","/soc/usb@1c13000","srgn,usb-hs-enabled",None])
@@ -95,8 +167,7 @@ def patch():
     else:
         summary += "USB高速模式: 关闭\n"
 
-
-    return patchlist,dt_file,config
+    return patchlist,dt_file,summary
     
 # will be called by flasher
 # will be called last
