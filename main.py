@@ -96,7 +96,7 @@ def main():
                  "flasher":flasher
                  }, open("last_config_path", "wb+"))
 
-    print("烧录完成！请断开设备电源，拔掉数据线，然后重新上电启动设备。")
+    print("烧录完成！如果设备没有自动重启，请断开设备电源，拔掉数据线，然后重新上电启动设备。")
 
 if __name__ == "__main__":
     try:

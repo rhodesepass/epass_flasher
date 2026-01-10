@@ -83,6 +83,9 @@ class Flasher:
                 for w in d["write"]:
                     print(f"写入{w[1]}")
                     self.exec_cmd(f"spinand write {str(w[0])} {w[1]}")
+
+            print("重置设备...")
+            self.exec_cmd(f"reset")
         except Exception as e:
             print(f"烧录失败:{e}")
             print("设备目前无法启动，请重新进入fel进行一次成功的烧录")

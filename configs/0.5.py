@@ -31,7 +31,7 @@ xfel_config = {
 }
 
 # put devicetree path here
-dt_file = "firmware/devicetree-0.3.dts"
+dt_file = "firmware/devicetree-0.5.dts"
 
 # delete_node path nodename
 # insert_node path node_path
@@ -51,10 +51,16 @@ patchlist = [
 ]
 
 #老王
+# 老王也使用瀚彩初始化。
 def laowang_patch() -> None:
     
     patchlist_laowang = [
     ["insert_prop","/soc/lcd-controller@1c0c000","srgn,swap-b-r",None],
+    ["delete_node","/","st7701initseq"],
+    ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
+    #V0.5 workaround
+    ["delete_prop","/st7701initseq","cs-gpios"],
+    ["insert_prop","/st7701initseq","cs-gpios",CellArray([LabelReference("pio"),4,11,0])],
     ]
 
     global patchlist,summary
@@ -117,7 +123,7 @@ def patch():
     global patchlist,summary
     # put screen selection logic here
     # simply append to patchlist based on selection
-    print("您已选择0.3版本设备")
+    print("您已选择0.5版本设备")
     print("准备修补设备树...")
 
 

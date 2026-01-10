@@ -5,7 +5,7 @@ import re
 
 summary = ""
 
-# Configuration for 0.3.1 version device
+# Configuration for 0.5 version device
 
 # xfel configurations
 
@@ -31,7 +31,7 @@ xfel_config = {
 }
 
 # put devicetree path here
-dt_file = "firmware/devicetree-0.3.dts"
+dt_file = "firmware/devicetree-0.6.dts"
 
 # delete_node path nodename
 # insert_node path node_path
@@ -46,10 +46,11 @@ dt_file = "firmware/devicetree-0.3.dts"
 # ["delete_prop", "/soc/spi@1c05000", "status"]
 # ["insert_prop", "/soc/spi@1c05000", "status", StringList(["okay"])] like this
 
+
 patchlist = [
 ]
 
-# 老王
+#老王
 # 老王也使用瀚彩初始化。
 def laowang_patch() -> None:
     
@@ -57,6 +58,9 @@ def laowang_patch() -> None:
     ["insert_prop","/soc/lcd-controller@1c0c000","srgn,swap-b-r",None],
     ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
+    #V0.5 workaround
+    ["delete_prop","/st7701initseq","cs-gpios"],
+    ["insert_prop","/st7701initseq","cs-gpios",CellArray([LabelReference("pio"),4,11,0])],
     ]
 
     global patchlist,summary
@@ -71,6 +75,9 @@ def hannstar_patch() -> None:
     patchlist_hannstar = [
     ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_hannstar.dtsa"],
+    #V0.5 workaround
+    ["delete_prop","/st7701initseq","cs-gpios"],
+    ["insert_prop","/st7701initseq","cs-gpios",CellArray([LabelReference("pio"),4,11,0])],
     ]
 
     global patchlist,summary
@@ -85,6 +92,9 @@ def boe_patch() -> None:
     patchlist_boe = [
     ["delete_node","/","st7701initseq"],
     ["insert_node","/","dts/st7701_initseq/st7701_BOE.dtsa"],
+    #V0.5 workaround
+    ["delete_prop","/st7701initseq","cs-gpios"],
+    ["insert_prop","/st7701initseq","cs-gpios",CellArray([LabelReference("pio"),4,11,0])],
     ]
 
     global patchlist,summary
@@ -113,7 +123,7 @@ def patch():
     global patchlist,summary
     # put screen selection logic here
     # simply append to patchlist based on selection
-    print("您已选择0.3版本设备")
+    print("您已选择0.6版本设备")
     print("准备修补设备树...")
 
 
@@ -162,14 +172,12 @@ def patch():
                           "reg",
                            CellArray([int(0x620000), rootfs_size])])
         
-
     input_usb = input("是否启用USB高速模式？(输入y启用 回车关闭): ").strip().lower()
     if input_usb == 'y':
         patchlist.append(["insert_prop","/soc/usb@1c13000","srgn,usb-hs-enabled",None])
         summary += "USB高速模式: 启用\n"
     else:
         summary += "USB高速模式: 关闭\n"
-
 
     return patchlist,dt_file,summary
     
